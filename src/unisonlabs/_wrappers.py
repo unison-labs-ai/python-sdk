@@ -15,9 +15,10 @@ parsing entirely without changing application code structurally:
         for chunk in stream.iter_bytes(4096):
             ...
 """
+
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import httpx
 
@@ -33,10 +34,8 @@ from .types import (
     ListResponse,
     NeighborsResponse,
     SearchResponse,
-    ShareResponse,
     WhoAmIResponse,
 )
-
 
 # ---------------------------------------------------------------------------
 # Sync wrappers
@@ -60,12 +59,14 @@ class RawDocumentsResource:
 
     def get(self, path: str) -> RawResponse[BrainDocument]:
         from .resources.documents import _parse_doc
+
         raw = self._raw("GET", "/v1/brain/doc", params={"path": path})
         return RawResponse(raw=raw, parsed=_parse_doc(raw.json()))
 
     def write(self, path: str, body_md: str, **kw: Any) -> RawResponse[BrainDocument]:
         from ._fs_contract import resolve_write_path
         from .resources.documents import _parse_doc
+
         resolved = resolve_write_path(path)
         payload: Dict[str, Any] = {"path": resolved, "bodyMd": body_md, **kw}
         raw = self._raw("PUT", "/v1/brain/doc", json=payload)
@@ -162,12 +163,14 @@ class AsyncRawDocumentsResource:
 
     async def get(self, path: str) -> RawResponse[BrainDocument]:
         from .resources.documents import _parse_doc
+
         raw = await self._raw("GET", "/v1/brain/doc", params={"path": path})
         return RawResponse(raw=raw, parsed=_parse_doc(raw.json()))
 
     async def write(self, path: str, body_md: str, **kw: Any) -> RawResponse[BrainDocument]:
         from ._fs_contract import resolve_write_path
         from .resources.documents import _parse_doc
+
         resolved = resolve_write_path(path)
         payload: Dict[str, Any] = {"path": resolved, "bodyMd": body_md, **kw}
         raw = await self._raw("PUT", "/v1/brain/doc", json=payload)

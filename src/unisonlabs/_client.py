@@ -1,4 +1,5 @@
 """Unison brain Python SDK — synchronous and asynchronous clients."""
+
 from __future__ import annotations
 
 import logging
@@ -60,7 +61,7 @@ def _parse_custom_headers_env(var: str) -> dict[str, str]:
     for line in raw.split("\n"):
         colon = line.find(":")
         if colon >= 0:
-            result[line[:colon].strip()] = line[colon + 1:].strip()
+            result[line[:colon].strip()] = line[colon + 1 :].strip()
     return result
 
 
@@ -92,9 +93,7 @@ class UnisonBrain:
         if token is None:
             token = os.environ.get("UNISON_TOKEN")
         if token is None:
-            raise UnisonError(
-                "No API token provided. Pass token= or set the UNISON_TOKEN environment variable."
-            )
+            raise UnisonError("No API token provided. Pass token= or set the UNISON_TOKEN environment variable.")
         self.token = token
 
         if base_url is None:
@@ -250,9 +249,7 @@ class AsyncUnisonBrain:
         if token is None:
             token = os.environ.get("UNISON_TOKEN")
         if token is None:
-            raise UnisonError(
-                "No API token provided. Pass token= or set the UNISON_TOKEN environment variable."
-            )
+            raise UnisonError("No API token provided. Pass token= or set the UNISON_TOKEN environment variable.")
         self.token = token
 
         if base_url is None:

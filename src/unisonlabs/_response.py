@@ -11,10 +11,11 @@ having to instrument the transport layer:
     raw.headers["x-request-id"]
     doc = raw.parse()
 """
+
 from __future__ import annotations
 
-from typing import Any, Callable, Generic, Iterator, AsyncIterator, TypeVar
 from types import TracebackType
+from typing import Any, AsyncIterator, Callable, Generic, Iterator, TypeVar
 
 import httpx
 

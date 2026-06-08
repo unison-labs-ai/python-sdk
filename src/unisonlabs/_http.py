@@ -9,11 +9,12 @@ Wraps httpx with:
 - Structured error raising
 - DefaultHttpxClient / DefaultAsyncHttpxClient with SDK-appropriate defaults
 """
+
 from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Dict, List, Mapping, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Tuple
 
 import httpx
 

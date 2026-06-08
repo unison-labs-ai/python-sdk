@@ -11,11 +11,12 @@ The Unison brain API does not currently expose SSE endpoints, but these
 classes are exported so downstream code can rely on the stable type surface
 and so that integration tests can import them without ``ImportError``.
 """
+
 from __future__ import annotations
 
 import json
 from types import TracebackType
-from typing import Any, Generic, Iterator, AsyncIterator, TypeVar
+from typing import AsyncIterator, Generic, Iterator, TypeVar
 
 import httpx
 
@@ -44,7 +45,7 @@ class Stream(Generic[_T]):
                 line = line.strip()
                 if not line or not line.startswith("data:"):
                     continue
-                payload = line[len("data:"):].strip()
+                payload = line[len("data:") :].strip()
                 if payload == "[DONE]":
                     break
                 try:
@@ -92,7 +93,7 @@ class AsyncStream(Generic[_T]):
                 line = line.strip()
                 if not line or not line.startswith("data:"):
                     continue
-                payload = line[len("data:"):].strip()
+                payload = line[len("data:") :].strip()
                 if payload == "[DONE]":
                     break
                 try:

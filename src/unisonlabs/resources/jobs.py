@@ -1,4 +1,5 @@
 """Jobs resource — job queue visibility (requires brain:admin scope)."""
+
 from __future__ import annotations
 
 from typing import Optional

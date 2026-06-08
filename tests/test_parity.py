@@ -1,7 +1,6 @@
 """Tests for parity-2 feature additions."""
-from __future__ import annotations
 
-import os
+from __future__ import annotations
 
 import httpx
 import pytest
@@ -9,6 +8,7 @@ import respx
 
 import unisonlabs
 from unisonlabs import (
+    APIResponseValidationError,
     AsyncStream,
     AsyncUnisonBrain,
     DefaultAsyncHttpxClient,
@@ -17,9 +17,7 @@ from unisonlabs import (
     Stream,
     UnisonBrain,
     file_from_path,
-    APIResponseValidationError,
 )
-
 
 # ---------------------------------------------------------------------------
 # DefaultHttpxClient / DefaultAsyncHttpxClient

@@ -2,6 +2,7 @@
 
 All HTTP calls are intercepted with respx so no real network traffic is made.
 """
+
 from __future__ import annotations
 
 import httpx
@@ -19,6 +20,7 @@ from unisonlabs._exceptions import BrainContractError, UnisonError
 
 def test_client_requires_token() -> None:
     import os
+
     old = os.environ.pop("UNISON_TOKEN", None)
     try:
         with pytest.raises(UnisonError, match="UNISON_TOKEN"):
@@ -70,38 +72,45 @@ def test_with_options_creates_new_instance() -> None:
 
 def test_fs_contract_unqualified_path() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     assert resolve_write_path("my-note.md") == "/private/notes/my-note.md"
 
 
 def test_fs_contract_private_prefix_passthrough() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     assert resolve_write_path("/private/notes/foo.md") == "/private/notes/foo.md"
 
 
 def test_fs_contract_tenant_prefix_passthrough() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     assert resolve_write_path("/tenant/people/alice.md") == "/tenant/people/alice.md"
 
 
 def test_fs_contract_teams_prefix_passthrough() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     assert resolve_write_path("/teams/eng/docs/arch.md") == "/teams/eng/docs/arch.md"
 
 
 def test_fs_contract_removed_root_raises() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     with pytest.raises(BrainContractError):
         resolve_write_path("/actions/foo.md")
 
 
 def test_fs_contract_read_only_root_raises() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     with pytest.raises(BrainContractError):
         resolve_write_path("/system/views/foo.md")
 
 
 def test_fs_contract_unknown_root_raises() -> None:
     from unisonlabs._fs_contract import resolve_write_path
+
     with pytest.raises(BrainContractError):
         resolve_write_path("/scratch/foo.md")
 
@@ -272,9 +281,7 @@ def test_facts_invalidate() -> None:
 
 @respx.mock
 def test_links_create_and_list() -> None:
-    respx.post("https://api.unisonlabs.ai/v1/brain/links").mock(
-        return_value=httpx.Response(200, json={})
-    )
+    respx.post("https://api.unisonlabs.ai/v1/brain/links").mock(return_value=httpx.Response(200, json={}))
     respx.get("https://api.unisonlabs.ai/v1/brain/links").mock(
         return_value=httpx.Response(
             200,

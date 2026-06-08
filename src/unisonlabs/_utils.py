@@ -1,10 +1,10 @@
 """Utility helpers for the Unison SDK."""
+
 from __future__ import annotations
 
 import os
 import pathlib
 from typing import Tuple
-
 
 # FileTypes mirrors the convention used in Stainless-generated SDKs:
 # a (filename, bytes) tuple suitable for passing to httpx multipart.
