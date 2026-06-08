@@ -1,6 +1,7 @@
 """Async usage example for the Unison brain Python SDK."""
 import asyncio
 import os
+
 from unisonlabs import AsyncUnisonBrain
 
 

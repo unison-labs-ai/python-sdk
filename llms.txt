@@ -1,0 +1,37 @@
+# Unison brain Python SDK
+
+> Official Python client (sync + async) for the Unison brain API — memory
+> infrastructure for AI agents and teams. Wraps the REST API at /v1/brain and
+> /v1/auth with typed Pydantic models and automatic retry.
+
+**Agents: start with [AGENTS.md](AGENTS.md)** — install, authenticate with a
+`usk_` key, and use this client in four steps.
+
+## Docs
+- [README.md](README.md): install, quickstart, full API reference, env vars
+- [AGENTS.md](AGENTS.md): agent-specific onboarding and contribution guide
+- [CONTRIBUTING.md](CONTRIBUTING.md): development setup and PR conventions
+- [SECURITY.md](SECURITY.md): credential handling and vulnerability reporting
+
+## Usage
+- [examples/basic_usage.py](examples/basic_usage.py): sync client — whoami, search, write, read
+- [examples/async_usage.py](examples/async_usage.py): async client — same operations with asyncio
+
+## Examples
+
+Install and authenticate:
+```bash
+pip install unisonlabs
+export UNISON_TOKEN=usk_live_...
+export UNISON_API_URL=https://api.unisonlabs.ai   # optional; this is the default
+```
+
+Search, write, read back:
+```python
+from unisonlabs import UnisonBrain
+client = UnisonBrain()                                    # reads env vars
+results = client.search("architecture decisions", limit=5)
+doc = client.write("/private/notes/my-note.md", "# Note\nContent.")
+doc2 = client.get("/private/notes/my-note.md")
+print(doc2.body)
+```

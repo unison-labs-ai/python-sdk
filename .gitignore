@@ -10,3 +10,6 @@ venv/
 .ruff_cache/
 *.egg
 .DS_Store
+.env
+.env.local
+.env.*.local

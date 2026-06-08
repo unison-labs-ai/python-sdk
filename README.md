@@ -8,6 +8,26 @@ The official Python SDK for the [Unison brain API](https://docs.unisonlabs.ai) �
 
 Both synchronous and asynchronous clients are included, powered by [httpx](https://www.python-httpx.org/).
 
+**AI agents:** read [AGENTS.md](AGENTS.md) — it covers install, auth with a `usk_` key, and the search-first / write-back loop in four steps.
+
+## Quickstart
+
+```bash
+pip install unisonlabs
+export UNISON_TOKEN=usk_live_...
+```
+
+```python
+from unisonlabs import UnisonBrain
+
+client = UnisonBrain()                                         # reads UNISON_TOKEN env var
+results = client.search("architecture decisions", limit=5)     # hybrid search
+doc = client.write("/private/notes/my-note.md", "# Note\n...")  # write
+doc2 = client.get("/private/notes/my-note.md")                # read back
+print(doc2.body)                                               # full markdown body
+client.close()
+```
+
 ## MCP Server
 
 Use the Unison brain MCP server to give AI assistants direct access to your brain:
@@ -286,3 +306,5 @@ Python 3.9 or higher.
 ## Contributing
 
 Open issues and pull requests at [github.com/unison-labs-ai/python-sdk](https://github.com/unison-labs-ai/python-sdk).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, conventions, and PR guidelines.
+Security issues: email security@unisonlabs.ai — do not open a public issue.

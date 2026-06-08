@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 
 class WhoAmIUser(BaseModel):
@@ -52,11 +52,20 @@ class BrainDocument(BaseModel):
     kind: Optional[str] = None
     tags: Optional[List[str]] = None
     visibility: Optional[str] = None
+    # Canonical field name from the API wire format.
+    bodyMd: Optional[str] = None
+    # Friendly alias; populated from bodyMd if body is not set directly.
     body: Optional[str] = None
     contentHash: Optional[str] = None
     createdAt: Optional[str] = None
     updatedAt: Optional[str] = None
     source: Optional[BrainDocSource] = None
+
+    @model_validator(mode="after")
+    def _coerce_body(self) -> "BrainDocument":
+        if self.body is None and self.bodyMd is not None:
+            self.body = self.bodyMd
+        return self
 
     def to_dict(self) -> Dict[str, Any]:
         return self.model_dump(exclude_none=True)
