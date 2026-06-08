@@ -1,4 +1,5 @@
 """Documents resource — CRUD + tag + search + grep on brain documents."""
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional

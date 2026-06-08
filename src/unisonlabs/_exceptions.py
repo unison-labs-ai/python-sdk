@@ -76,6 +76,28 @@ class InternalServerError(APIStatusError):
     pass
 
 
+class APIResponseValidationError(APIError):
+    """Raised when an API response cannot be validated against the expected schema.
+
+    This mirrors the same exception name used in Stainless-generated SDKs so
+    that downstream code can catch it portably.
+    """
+
+    response: httpx.Response
+    status_code: int
+
+    def __init__(
+        self,
+        *,
+        response: httpx.Response,
+        message: str = "Data returned by API invalid for expected schema.",
+        body: Optional[object] = None,
+    ) -> None:
+        super().__init__(message, response.request, body=body)
+        self.response = response
+        self.status_code = response.status_code
+
+
 class BrainContractError(UnisonError):
     """Raised client-side when a path violates the brain FS contract before making a network call."""
 
