@@ -1,4 +1,5 @@
 """Review resource — dedup/merge review (requires brain:admin scope)."""
+
 from __future__ import annotations
 
 from typing import Optional

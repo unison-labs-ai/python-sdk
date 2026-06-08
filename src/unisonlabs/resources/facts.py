@@ -1,4 +1,5 @@
 """Facts resource — record and query brain facts."""
+
 from __future__ import annotations
 
 from typing import Any, Dict, Optional

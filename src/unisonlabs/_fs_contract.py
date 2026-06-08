@@ -3,6 +3,7 @@
 Mirrors the server's path routing rules so that obviously-invalid paths are
 rejected immediately without a round-trip.
 """
+
 from __future__ import annotations
 
 import re
@@ -82,8 +83,7 @@ def resolve_write_path(path: str) -> str:
 
     # Unknown namespace
     raise BrainContractError(
-        f"Path '{path}' does not start with a recognised root. "
-        "Writable roots: /private/, /tenant/, /teams/<slug>/.",
+        f"Path '{path}' does not start with a recognised root. Writable roots: /private/, /tenant/, /teams/<slug>/.",
         path=path,
     )
 

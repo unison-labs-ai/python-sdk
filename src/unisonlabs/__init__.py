@@ -1,4 +1,5 @@
 """Unison brain Python SDK."""
+
 from __future__ import annotations
 
 from . import types
@@ -6,6 +7,7 @@ from ._client import AsyncClient, AsyncUnisonBrain, Client, UnisonBrain
 from ._exceptions import (
     APIConnectionError,
     APIError,
+    APIResponseValidationError,
     APIStatusError,
     APITimeoutError,
     AuthenticationError,
@@ -19,6 +21,10 @@ from ._exceptions import (
     UnisonError,
     UnprocessableEntityError,
 )
+from ._http import DefaultAsyncHttpxClient, DefaultHttpxClient
+from ._response import AsyncStreamingResponse, RawResponse, StreamingResponse
+from ._streaming import AsyncStream, Stream
+from ._utils import file_from_path
 from ._version import __title__, __version__
 from .types import (
     BrainDocument,
@@ -65,6 +71,7 @@ __all__ = [
     "APIStatusError",
     "APITimeoutError",
     "APIConnectionError",
+    "APIResponseValidationError",
     "BadRequestError",
     "AuthenticationError",
     "PermissionDeniedError",
@@ -74,6 +81,18 @@ __all__ = [
     "RateLimitError",
     "InternalServerError",
     "BrainContractError",
+    # HTTP utilities
+    "DefaultHttpxClient",
+    "DefaultAsyncHttpxClient",
+    # Response wrappers
+    "RawResponse",
+    "StreamingResponse",
+    "AsyncStreamingResponse",
+    # Streaming
+    "Stream",
+    "AsyncStream",
+    # File utilities
+    "file_from_path",
     # Response types
     "WhoAmIResponse",
     "ProvisionResponse",
