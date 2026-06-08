@@ -397,3 +397,64 @@ async def test_async_write() -> None:
     async with AsyncUnisonBrain(token="usk_live_test") as client:
         doc = await client.write("/private/notes/async-note.md", "# Async")
     assert doc.path == "/private/notes/async-note.md"
+
+
+# ---------------------------------------------------------------------------
+# Retry-After header support (parity feature)
+# ---------------------------------------------------------------------------
+
+
+def test_retry_delay_respects_retry_after_header() -> None:
+    from unisonlabs._http import _retry_delay
+
+    resp = httpx.Response(429, headers={"Retry-After": "3"})
+    delay = _retry_delay(attempt=1, response=resp)
+    assert delay == 3.0
+
+
+def test_retry_delay_caps_retry_after_at_max() -> None:
+    from unisonlabs._http import _MAX_RETRY_AFTER, _retry_delay
+
+    resp = httpx.Response(429, headers={"Retry-After": "9999"})
+    delay = _retry_delay(attempt=1, response=resp)
+    assert delay == _MAX_RETRY_AFTER
+
+
+def test_retry_delay_falls_back_to_exponential_on_non_429() -> None:
+    from unisonlabs._http import _retry_delay
+
+    resp = httpx.Response(503)
+    delay = _retry_delay(attempt=1, response=resp)
+    # 0.5 * 2^(1-1) = 0.5
+    assert delay == 0.5
+
+
+def test_retry_delay_falls_back_when_no_response() -> None:
+    from unisonlabs._http import _retry_delay
+
+    delay = _retry_delay(attempt=2)
+    # 0.5 * 2^(2-1) = 1.0
+    assert delay == 1.0
+
+
+def test_retry_delay_ignores_invalid_retry_after_value() -> None:
+    from unisonlabs._http import _retry_delay
+
+    resp = httpx.Response(429, headers={"Retry-After": "not-a-number"})
+    # Should fall back to exponential
+    delay = _retry_delay(attempt=1, response=resp)
+    assert delay == 0.5
+
+
+@respx.mock
+def test_rate_limit_retry_with_retry_after() -> None:
+    """On 429 with Retry-After the client retries and succeeds."""
+    route = respx.get("https://api.unisonlabs.ai/v1/brain/status")
+    route.side_effect = [
+        httpx.Response(429, headers={"Retry-After": "0"}, json={"error": "rate limited"}),
+        httpx.Response(200, json={"docCount": 7, "entityCount": 2, "factCount": 1}),
+    ]
+    with UnisonBrain(token="usk_live_test", max_retries=1) as client:
+        status = client.status()
+    assert status.docCount == 7
+    assert route.call_count == 2

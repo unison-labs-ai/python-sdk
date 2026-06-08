@@ -3,6 +3,7 @@
 Wraps httpx with:
 - Automatic Bearer token injection
 - Automatic retry with exponential backoff (default 2 retries)
+- Retry-After header support: on 429 the server-specified delay takes precedence
 - Array query-param serialisation (repeated key, not comma-separated)
 - Structured error raising
 """
@@ -25,6 +26,25 @@ logger = logging.getLogger("unisonlabs")
 _RETRYABLE_STATUS = {408, 409, 429, 500, 502, 503, 504}
 DEFAULT_MAX_RETRIES = 2
 DEFAULT_TIMEOUT = 60.0
+_MAX_RETRY_AFTER = 60.0
+
+
+def _retry_delay(attempt: int, response: Optional[httpx.Response] = None) -> float:
+    """Return seconds to wait before the next attempt.
+
+    Respects the ``Retry-After`` header on 429 responses (up to
+    ``_MAX_RETRY_AFTER`` seconds so a misbehaving server cannot stall the
+    caller indefinitely). Falls back to exponential backoff otherwise.
+    """
+    if response is not None and response.status_code == 429:
+        header = response.headers.get("retry-after") or response.headers.get("Retry-After")
+        if header is not None:
+            try:
+                delay = float(header)
+                return min(delay, _MAX_RETRY_AFTER)
+            except ValueError:
+                pass
+    return min(0.5 * (2 ** (attempt - 1)), 8.0)
 
 
 def _build_query_params(params: Dict[str, Any]) -> List[Tuple[str, str]]:
@@ -90,7 +110,8 @@ class HttpTransport:
                         body = resp.text
                     if resp.status_code in _RETRYABLE_STATUS and attempt < self.max_retries:
                         attempt += 1
-                        wait = min(0.5 * (2 ** (attempt - 1)), 8.0)
+                        wait = _retry_delay(attempt, resp)
+                        logger.debug("retry %d after %.1fs (status %d)", attempt, wait, resp.status_code)
                         time.sleep(wait)
                         last_exc = _make_status_error(resp, body)
                         continue
@@ -103,7 +124,7 @@ class HttpTransport:
                 req = e.request  # type: ignore[union-attr]
                 if attempt < self.max_retries:
                     attempt += 1
-                    time.sleep(0.5 * (2 ** (attempt - 1)))
+                    time.sleep(_retry_delay(attempt))
                     last_exc = APITimeoutError(req)
                     continue
                 raise APITimeoutError(req) from e
@@ -111,7 +132,7 @@ class HttpTransport:
                 req = e.request
                 if attempt < self.max_retries:
                     attempt += 1
-                    time.sleep(0.5 * (2 ** (attempt - 1)))
+                    time.sleep(_retry_delay(attempt))
                     last_exc = APIConnectionError(str(e), request=req)
                     continue
                 raise APIConnectionError(str(e), request=req) from e
@@ -180,7 +201,8 @@ class AsyncHttpTransport:
                         body = resp.text
                     if resp.status_code in _RETRYABLE_STATUS and attempt < self.max_retries:
                         attempt += 1
-                        wait = min(0.5 * (2 ** (attempt - 1)), 8.0)
+                        wait = _retry_delay(attempt, resp)
+                        logger.debug("retry %d after %.1fs (status %d)", attempt, wait, resp.status_code)
                         await asyncio.sleep(wait)
                         last_exc = _make_status_error(resp, body)
                         continue
@@ -193,7 +215,7 @@ class AsyncHttpTransport:
                 req = e.request  # type: ignore[union-attr]
                 if attempt < self.max_retries:
                     attempt += 1
-                    await asyncio.sleep(0.5 * (2 ** (attempt - 1)))
+                    await asyncio.sleep(_retry_delay(attempt))
                     last_exc = APITimeoutError(req)
                     continue
                 raise APITimeoutError(req) from e
@@ -201,7 +223,7 @@ class AsyncHttpTransport:
                 req = e.request
                 if attempt < self.max_retries:
                     attempt += 1
-                    await asyncio.sleep(0.5 * (2 ** (attempt - 1)))
+                    await asyncio.sleep(_retry_delay(attempt))
                     last_exc = APIConnectionError(str(e), request=req)
                     continue
                 raise APIConnectionError(str(e), request=req) from e
