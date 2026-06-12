@@ -46,6 +46,9 @@ class BrainDocSource(BaseModel):
 
 
 class BrainDocument(BaseModel):
+    # Server-assigned document UUID — needed for entity-linking and
+    # facts workflows that reference documents by id.
+    id: Optional[str] = None
     path: str
     title: Optional[str] = None
     tldr: Optional[str] = None
