@@ -31,7 +31,7 @@ Server-side or account issues should also go to the same address.
 The client reads your API key from the `UNISON_TOKEN` environment variable (or
 the `token=` constructor argument). The token is never written to disk by this
 library, never logged, and is transmitted only to the configured API host
-(`UNISON_API_URL`, default `https://api.unisonlabs.ai`) as an HTTP
+(`UNISON_API_URL`, default `https://brain.unisonlabs.ai`) as an HTTP
 `Authorization: Bearer <token>` header.
 
 Store your key in a `.env` file (covered by `.gitignore`) or a secrets manager.

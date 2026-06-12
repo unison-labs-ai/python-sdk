@@ -70,7 +70,7 @@ def test_file_from_path_nested(tmp_path) -> None:
 
 
 def test_api_response_validation_error_attrs() -> None:
-    req = httpx.Request("GET", "https://api.unisonlabs.ai/v1/test")
+    req = httpx.Request("GET", "https://brain.unisonlabs.ai/v1/test")
     raw = httpx.Response(200, json={"unexpected": True}, request=req)
     err = APIResponseValidationError(response=raw)
     assert err.status_code == 200
@@ -115,7 +115,7 @@ def test_stream_iterates_sse() -> None:
 
 @respx.mock
 def test_default_headers_sent_on_every_request() -> None:
-    route = respx.get("https://api.unisonlabs.ai/v1/auth/whoami").mock(
+    route = respx.get("https://brain.unisonlabs.ai/v1/auth/whoami").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -133,7 +133,7 @@ def test_default_headers_sent_on_every_request() -> None:
 
 @respx.mock
 def test_default_query_sent_on_every_request() -> None:
-    route = respx.get("https://api.unisonlabs.ai/v1/brain/status").mock(
+    route = respx.get("https://brain.unisonlabs.ai/v1/brain/status").mock(
         return_value=httpx.Response(200, json={"docCount": 1, "entityCount": 0, "factCount": 0})
     )
     with UnisonBrain(token="usk_live_test", default_query={"workspace": "test-ws"}) as client:
@@ -150,7 +150,7 @@ def test_default_query_sent_on_every_request() -> None:
 
 @respx.mock
 def test_with_options_default_headers_merged() -> None:
-    route = respx.get("https://api.unisonlabs.ai/v1/auth/whoami").mock(
+    route = respx.get("https://brain.unisonlabs.ai/v1/auth/whoami").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -172,7 +172,7 @@ def test_with_options_default_headers_merged() -> None:
 
 @respx.mock
 def test_with_options_set_default_headers_replaces() -> None:
-    route = respx.get("https://api.unisonlabs.ai/v1/auth/whoami").mock(
+    route = respx.get("https://brain.unisonlabs.ai/v1/auth/whoami").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -210,7 +210,7 @@ def test_with_options_mutual_exclusion() -> None:
 @respx.mock
 def test_custom_headers_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("UNISON_CUSTOM_HEADERS", "X-Env-Header: envvalue\nX-Another: second")
-    route = respx.get("https://api.unisonlabs.ai/v1/auth/whoami").mock(
+    route = respx.get("https://brain.unisonlabs.ai/v1/auth/whoami").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -235,7 +235,7 @@ def test_custom_headers_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @respx.mock
 def test_with_raw_response_status() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/status").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/status").mock(
         return_value=httpx.Response(
             200,
             headers={"x-request-id": "req-abc"},
@@ -253,7 +253,7 @@ def test_with_raw_response_status() -> None:
 
 @respx.mock
 def test_with_raw_response_documents_search() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/search").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/search").mock(
         return_value=httpx.Response(
             200,
             json={"results": [{"doc": {"path": "/tenant/foo.md"}, "score": 0.9}]},
@@ -272,7 +272,7 @@ def test_with_raw_response_documents_search() -> None:
 
 @respx.mock
 def test_client_add_convenience() -> None:
-    respx.put("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.put("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
             json={"path": "/private/notes/my-note.md"},
@@ -286,7 +286,7 @@ def test_client_add_convenience() -> None:
 @respx.mock
 @pytest.mark.asyncio
 async def test_async_client_add_convenience() -> None:
-    respx.put("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.put("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
             json={"path": "/private/notes/async-note.md"},

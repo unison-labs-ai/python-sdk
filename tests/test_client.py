@@ -45,7 +45,7 @@ def test_client_reads_token_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_client_sets_default_base_url() -> None:
     client = UnisonBrain(token="usk_live_test")
-    assert client.base_url == "https://api.unisonlabs.ai"
+    assert client.base_url == "https://brain.unisonlabs.ai"
     client.close()
 
 
@@ -122,7 +122,7 @@ def test_fs_contract_unknown_root_raises() -> None:
 
 @respx.mock
 def test_whoami() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/auth/whoami").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/auth/whoami").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -140,7 +140,7 @@ def test_whoami() -> None:
 
 @respx.mock
 def test_search() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/search").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/search").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -162,7 +162,7 @@ def test_search() -> None:
 
 @respx.mock
 def test_write_document() -> None:
-    respx.put("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.put("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
             json={"path": "/private/notes/my-note.md", "title": "My Note"},
@@ -175,7 +175,7 @@ def test_write_document() -> None:
 
 @respx.mock
 def test_get_document() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
             json={"path": "/tenant/notes/foo.md", "body": "# Foo\nContent"},
@@ -188,7 +188,7 @@ def test_get_document() -> None:
 
 @respx.mock
 def test_edit_document() -> None:
-    respx.patch("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.patch("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
             json={"path": "/private/notes/my-note.md"},
@@ -201,7 +201,7 @@ def test_edit_document() -> None:
 
 @respx.mock
 def test_delete_document() -> None:
-    respx.delete("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.delete("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(200, json={"deleted": True})
     )
     with UnisonBrain(token="usk_live_test") as client:
@@ -211,7 +211,7 @@ def test_delete_document() -> None:
 
 @respx.mock
 def test_list_documents() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/list").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/list").mock(
         return_value=httpx.Response(
             200,
             json={"documents": [{"path": "/tenant/notes/a.md"}, {"path": "/tenant/notes/b.md"}]},
@@ -224,7 +224,7 @@ def test_list_documents() -> None:
 
 @respx.mock
 def test_entities_resolve() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/entities/resolve").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/entities/resolve").mock(
         return_value=httpx.Response(
             200,
             json={"entity": {"id": "eid1", "kind": "person", "displayName": "Daniel"}},
@@ -238,7 +238,7 @@ def test_entities_resolve() -> None:
 
 @respx.mock
 def test_entities_upsert() -> None:
-    respx.post("https://api.unisonlabs.ai/v1/brain/entities").mock(
+    respx.post("https://brain.unisonlabs.ai/v1/brain/entities").mock(
         return_value=httpx.Response(
             200,
             json={"id": "eid2", "kind": "company", "displayName": "Unison"},
@@ -251,7 +251,7 @@ def test_entities_upsert() -> None:
 
 @respx.mock
 def test_facts_record() -> None:
-    respx.post("https://api.unisonlabs.ai/v1/brain/facts").mock(
+    respx.post("https://brain.unisonlabs.ai/v1/brain/facts").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -271,7 +271,7 @@ def test_facts_record() -> None:
 
 @respx.mock
 def test_facts_invalidate() -> None:
-    respx.delete("https://api.unisonlabs.ai/v1/brain/facts/fid1").mock(
+    respx.delete("https://brain.unisonlabs.ai/v1/brain/facts/fid1").mock(
         return_value=httpx.Response(200, json={"invalidated": True})
     )
     with UnisonBrain(token="usk_live_test") as client:
@@ -281,8 +281,8 @@ def test_facts_invalidate() -> None:
 
 @respx.mock
 def test_links_create_and_list() -> None:
-    respx.post("https://api.unisonlabs.ai/v1/brain/links").mock(return_value=httpx.Response(200, json={}))
-    respx.get("https://api.unisonlabs.ai/v1/brain/links").mock(
+    respx.post("https://brain.unisonlabs.ai/v1/brain/links").mock(return_value=httpx.Response(200, json={}))
+    respx.get("https://brain.unisonlabs.ai/v1/brain/links").mock(
         return_value=httpx.Response(
             200,
             json={"links": [{"fromId": "a", "toId": "b", "kind": "see_also"}]},
@@ -296,7 +296,7 @@ def test_links_create_and_list() -> None:
 
 @respx.mock
 def test_status() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/status").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/status").mock(
         return_value=httpx.Response(
             200,
             json={"docCount": 42, "entityCount": 10, "factCount": 100},
@@ -309,7 +309,7 @@ def test_status() -> None:
 
 @respx.mock
 def test_auth_provision() -> None:
-    respx.post("https://api.unisonlabs.ai/v1/auth/provision").mock(
+    respx.post("https://brain.unisonlabs.ai/v1/auth/provision").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -329,7 +329,7 @@ def test_auth_provision() -> None:
 
 @respx.mock
 def test_auth_verify() -> None:
-    respx.post("https://api.unisonlabs.ai/v1/auth/verify").mock(
+    respx.post("https://brain.unisonlabs.ai/v1/auth/verify").mock(
         return_value=httpx.Response(
             200,
             json={"verified": True, "tenantId": "t1", "apiKey": "usk_live_new"},
@@ -343,7 +343,7 @@ def test_auth_verify() -> None:
 
 @respx.mock
 def test_4xx_raises_api_status_error() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             404,
             json={"error": {"code": "not_found", "message": "Document not found"}},
@@ -356,7 +356,7 @@ def test_4xx_raises_api_status_error() -> None:
 
 @respx.mock
 def test_auth_header_sent() -> None:
-    route = respx.get("https://api.unisonlabs.ai/v1/auth/whoami").mock(
+    route = respx.get("https://brain.unisonlabs.ai/v1/auth/whoami").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -381,7 +381,7 @@ def test_auth_header_sent() -> None:
 @respx.mock
 @pytest.mark.asyncio
 async def test_async_search() -> None:
-    respx.get("https://api.unisonlabs.ai/v1/brain/search").mock(
+    respx.get("https://brain.unisonlabs.ai/v1/brain/search").mock(
         return_value=httpx.Response(
             200,
             json={"results": [{"doc": {"path": "/tenant/notes/x.md"}, "score": 0.8}]},
@@ -395,7 +395,7 @@ async def test_async_search() -> None:
 @respx.mock
 @pytest.mark.asyncio
 async def test_async_write() -> None:
-    respx.put("https://api.unisonlabs.ai/v1/brain/doc").mock(
+    respx.put("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
             json={"path": "/private/notes/async-note.md"},
@@ -456,7 +456,7 @@ def test_retry_delay_ignores_invalid_retry_after_value() -> None:
 @respx.mock
 def test_rate_limit_retry_with_retry_after() -> None:
     """On 429 with Retry-After the client retries and succeeds."""
-    route = respx.get("https://api.unisonlabs.ai/v1/brain/status")
+    route = respx.get("https://brain.unisonlabs.ai/v1/brain/status")
     route.side_effect = [
         httpx.Response(429, headers={"Retry-After": "0"}, json={"error": "rate limited"}),
         httpx.Response(200, json={"docCount": 7, "entityCount": 2, "factCount": 1}),

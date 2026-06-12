@@ -26,7 +26,7 @@ The client reads your key from the environment:
 
 ```bash
 export UNISON_TOKEN=usk_live_...          # required
-export UNISON_API_URL=https://api.unisonlabs.ai   # optional default
+export UNISON_API_URL=https://brain.unisonlabs.ai   # optional default
 ```
 
 For local development against a self-hosted brain:
@@ -102,7 +102,7 @@ asyncio.run(main())
 | Variable | Default | Description |
 |---|---|---|
 | `UNISON_TOKEN` | required | `usk_live_...` API key |
-| `UNISON_API_URL` | `https://api.unisonlabs.ai` | Brain API base URL |
+| `UNISON_API_URL` | `https://brain.unisonlabs.ai` | Brain API base URL |
 
 ---
 
