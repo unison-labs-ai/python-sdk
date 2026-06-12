@@ -27,7 +27,7 @@ from .types import BrainDocument, BrainStatus, SearchResponse, WhoAmIResponse
 
 __all__ = ["UnisonBrain", "AsyncUnisonBrain", "Client", "AsyncClient"]
 
-_DEFAULT_API_URL = "https://api.unisonlabs.ai"
+_DEFAULT_API_URL = "https://brain.unisonlabs.ai"
 
 logger = logging.getLogger("unisonlabs")
 

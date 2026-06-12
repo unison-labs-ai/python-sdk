@@ -23,7 +23,7 @@ Install and authenticate:
 ```bash
 pip install unisonlabs
 export UNISON_TOKEN=usk_live_...
-export UNISON_API_URL=https://api.unisonlabs.ai   # optional; this is the default
+export UNISON_API_URL=https://brain.unisonlabs.ai   # optional; this is the default
 ```
 
 Search, write, read back:

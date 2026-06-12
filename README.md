@@ -40,7 +40,7 @@ Use the Unison brain MCP server to give AI assistants direct access to your brai
       "args": ["-y", "@unisonlabs/mcp"],
       "env": {
         "UNISON_TOKEN": "usk_live_...",
-        "UNISON_API_URL": "https://api.unisonlabs.ai"
+        "UNISON_API_URL": "https://brain.unisonlabs.ai"
       }
     }
   }
@@ -58,7 +58,7 @@ pip install unisonlabs
 | Variable | Default | Description |
 |---|---|---|
 | `UNISON_TOKEN` | required | Your `usk_live_...` API token |
-| `UNISON_API_URL` | `https://api.unisonlabs.ai` | Base URL for the brain API |
+| `UNISON_API_URL` | `https://brain.unisonlabs.ai` | Base URL for the brain API |
 
 Set these in your environment or a `.env` file. The client reads them automatically.
 
@@ -156,7 +156,7 @@ import httpx
 
 # Step 1 — provision (creates an unverified account + returns a usk_ key)
 resp = httpx.post(
-    "https://api.unisonlabs.ai/v1/auth/provision",
+    "https://brain.unisonlabs.ai/v1/auth/provision",
     json={"email": "agent@example.com"},
 )
 api_key = resp.json()["apiKey"]  # immediately usable (unverified, 72h expiry)
