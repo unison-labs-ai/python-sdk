@@ -465,3 +465,17 @@ def test_rate_limit_retry_with_retry_after() -> None:
         status = client.status()
     assert status.docCount == 7
     assert route.call_count == 2
+
+
+def test_brain_document_preserves_server_id():
+    from unisonlabs.types import BrainDocument
+
+    doc = BrainDocument.model_validate(
+        {
+            "id": "4df4dfeb-535a-4a86-9622-c99024d53335",
+            "path": "/private/notes/x.md",
+            "bodyMd": "hello",
+        }
+    )
+    assert doc.id == "4df4dfeb-535a-4a86-9622-c99024d53335"
+    assert doc.body == "hello"
