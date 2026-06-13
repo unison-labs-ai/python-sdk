@@ -35,7 +35,7 @@ class AuthResource:
         return ProvisionResponse(**data)
 
     def verify(self, email: str, code: str) -> VerifyResponse:
-        """Verify the emailed OTP to make a tenant durable, or recover a key."""
+        """Verify the emailed OTP to make a workspace durable, or recover a key."""
         data = self._t.request("POST", "/v1/auth/verify", json={"email": email, "code": code})
         return VerifyResponse(**data)
 

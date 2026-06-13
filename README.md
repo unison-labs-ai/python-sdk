@@ -84,11 +84,11 @@ for hit in results.results:
     print(f"[{hit.score:.2f}] {hit.doc.path}")
 
 # Read a document
-doc = client.get("/tenant/projects/architecture.md")
+doc = client.get("/workspace/projects/architecture.md")
 print(doc.body)
 
 # Write a document
-# Writable roots: /private/..., /tenant/..., /teams/<slug>/...
+# Writable roots: /private/..., /workspace/...
 doc = client.write(
     "/private/notes/my-note.md",
     "# My Note\n\nContent here.",
@@ -138,7 +138,7 @@ asyncio.run(main())
 
 ```python
 with UnisonBrain() as client:
-    doc = client.get("/tenant/notes/foo.md")
+    doc = client.get("/workspace/notes/foo.md")
 ```
 
 ### with_options
@@ -165,7 +165,7 @@ api_key = resp.json()["apiKey"]  # immediately usable (unverified, 72h expiry)
 from unisonlabs import UnisonBrain
 client = UnisonBrain(token=api_key)
 verify_resp = client.auth.verify("agent@example.com", input("OTP: "))
-# Tenant is now durable; key never expires unless rotated
+# Workspace is now durable; key never expires unless rotated
 
 # Key recovery (already-verified accounts)
 client.auth.request_key("agent@example.com")
@@ -186,7 +186,7 @@ print(new_key_resp.apiKey)
 | `edit(path, old_str, new_str)` | Surgical in-place edit |
 | `delete(path)` | Delete a document |
 | `tag(path, *, add, remove)` | Add/remove tags |
-| `share(*, kind, id)` | Promote private to tenant-visible |
+| `share(*, kind, id)` | Promote private to workspace-visible |
 | `list(*, prefix, kind, tag, limit)` | List documents |
 | `fs_list(path)` | Directory listing |
 | `fs_read(path)` | Raw content (including read-only tiers) |
@@ -256,10 +256,9 @@ All document paths must end in `.md`. Writable roots:
 | Root | Visibility |
 |---|---|
 | `/private/...` | Private to the calling user |
-| `/tenant/...` | Entire tenant |
-| `/teams/<slug>/...` | That team-space |
+| `/workspace/...` | Entire workspace (use `workspace/teams/<slug>/` for team folders) |
 
-Unqualified paths (no leading `/`) are automatically rewritten to `/private/notes/<slug>.md`. Invalid roots (`/actions/`, `/raw/`, unknown namespaces) raise `BrainContractError` before any network call.
+Unqualified paths (no leading `/`) are automatically rewritten to `/private/notes/<slug>.md`. Invalid roots (`/actions/`, `/raw/`, `/teams/`, unknown namespaces) raise `BrainContractError` before any network call.
 
 ## Error handling
 
@@ -267,7 +266,7 @@ Unqualified paths (no leading `/`) are automatically rewritten to `/private/note
 import unisonlabs
 
 try:
-    doc = client.get("/tenant/missing.md")
+    doc = client.get("/workspace/missing.md")
 except unisonlabs.NotFoundError as e:
     print(f"404: {e.message}")
 except unisonlabs.AuthenticationError:

@@ -10,10 +10,10 @@ import re
 
 from ._exceptions import BrainContractError
 
-_WRITABLE_ROOTS = ("/private/", "/tenant/", "/teams/")
+_WRITABLE_ROOTS = ("/private/", "/workspace/")
 _LEGACY_ROOTS = ("/wiki/", "/skills/")
 _READ_ONLY_ROOTS = ("/system/", "/sources/")
-_REMOVED_ROOTS = ("/actions/", "/raw/")
+_REMOVED_ROOTS = ("/actions/", "/raw/", "/teams/")
 
 _SLUG_RE = re.compile(r"[^a-z0-9-]")
 
@@ -54,7 +54,7 @@ def resolve_write_path(path: str) -> str:
         if path.startswith(root) or path == root.rstrip("/"):
             raise BrainContractError(
                 f"Path '{path}' uses a removed root ({root.rstrip('/')}). "
-                "Writable roots are /private/, /tenant/, /teams/<slug>/.",
+                "Writable roots are /private/, /workspace/.",
                 path=path,
             )
 
@@ -83,7 +83,7 @@ def resolve_write_path(path: str) -> str:
 
     # Unknown namespace
     raise BrainContractError(
-        f"Path '{path}' does not start with a recognised root. Writable roots: /private/, /tenant/, /teams/<slug>/.",
+        f"Path '{path}' does not start with a recognised root. Writable roots: /private/, /workspace/.",
         path=path,
     )
 
