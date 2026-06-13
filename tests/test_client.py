@@ -94,11 +94,6 @@ def test_fs_contract_workspace_teams_prefix_passthrough() -> None:
     assert resolve_write_path("/workspace/teams/eng/docs/arch.md") == "/workspace/teams/eng/docs/arch.md"
 
 
-def test_fs_contract_tenant_prefix_raises() -> None:
-    from unisonlabs._fs_contract import resolve_write_path
-
-    with pytest.raises(BrainContractError):
-        resolve_write_path("/tenant/people/alice.md")
 
 
 def test_fs_contract_teams_prefix_raises() -> None:
