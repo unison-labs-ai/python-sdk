@@ -82,16 +82,30 @@ def test_fs_contract_private_prefix_passthrough() -> None:
     assert resolve_write_path("/private/notes/foo.md") == "/private/notes/foo.md"
 
 
-def test_fs_contract_tenant_prefix_passthrough() -> None:
+def test_fs_contract_workspace_prefix_passthrough() -> None:
     from unisonlabs._fs_contract import resolve_write_path
 
-    assert resolve_write_path("/tenant/people/alice.md") == "/tenant/people/alice.md"
+    assert resolve_write_path("/workspace/people/alice.md") == "/workspace/people/alice.md"
 
 
-def test_fs_contract_teams_prefix_passthrough() -> None:
+def test_fs_contract_workspace_teams_prefix_passthrough() -> None:
     from unisonlabs._fs_contract import resolve_write_path
 
-    assert resolve_write_path("/teams/eng/docs/arch.md") == "/teams/eng/docs/arch.md"
+    assert resolve_write_path("/workspace/teams/eng/docs/arch.md") == "/workspace/teams/eng/docs/arch.md"
+
+
+def test_fs_contract_tenant_prefix_raises() -> None:
+    from unisonlabs._fs_contract import resolve_write_path
+
+    with pytest.raises(BrainContractError):
+        resolve_write_path("/tenant/people/alice.md")
+
+
+def test_fs_contract_teams_prefix_raises() -> None:
+    from unisonlabs._fs_contract import resolve_write_path
+
+    with pytest.raises(BrainContractError):
+        resolve_write_path("/teams/eng/docs/arch.md")
 
 
 def test_fs_contract_removed_root_raises() -> None:
@@ -127,7 +141,7 @@ def test_whoami() -> None:
             200,
             json={
                 "user": {"id": "u1", "email": "a@b.com"},
-                "tenant": {"id": "t1", "name": "Acme", "verified": True},
+                "workspace": {"id": "t1", "name": "Acme", "verified": True},
                 "scopes": ["brain:read", "brain:write"],
             },
         )
@@ -146,7 +160,7 @@ def test_search() -> None:
             json={
                 "results": [
                     {
-                        "doc": {"path": "/tenant/notes/foo.md", "title": "Foo"},
+                        "doc": {"path": "/workspace/notes/foo.md", "title": "Foo"},
                         "score": 0.95,
                     }
                 ]
@@ -156,7 +170,7 @@ def test_search() -> None:
     with UnisonBrain(token="usk_live_test") as client:
         result = client.search("auth decision", limit=5)
     assert len(result.results) == 1
-    assert result.results[0].doc.path == "/tenant/notes/foo.md"
+    assert result.results[0].doc.path == "/workspace/notes/foo.md"
     assert result.results[0].score == 0.95
 
 
@@ -178,11 +192,11 @@ def test_get_document() -> None:
     respx.get("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
             200,
-            json={"path": "/tenant/notes/foo.md", "body": "# Foo\nContent"},
+            json={"path": "/workspace/notes/foo.md", "body": "# Foo\nContent"},
         )
     )
     with UnisonBrain(token="usk_live_test") as client:
-        doc = client.get("/tenant/notes/foo.md")
+        doc = client.get("/workspace/notes/foo.md")
     assert doc.body == "# Foo\nContent"
 
 
@@ -205,7 +219,7 @@ def test_delete_document() -> None:
         return_value=httpx.Response(200, json={"deleted": True})
     )
     with UnisonBrain(token="usk_live_test") as client:
-        result = client.documents.delete("/tenant/notes/foo.md")
+        result = client.documents.delete("/workspace/notes/foo.md")
     assert result.deleted is True
 
 
@@ -214,11 +228,11 @@ def test_list_documents() -> None:
     respx.get("https://brain.unisonlabs.ai/v1/brain/list").mock(
         return_value=httpx.Response(
             200,
-            json={"documents": [{"path": "/tenant/notes/a.md"}, {"path": "/tenant/notes/b.md"}]},
+            json={"documents": [{"path": "/workspace/notes/a.md"}, {"path": "/workspace/notes/b.md"}]},
         )
     )
     with UnisonBrain(token="usk_live_test") as client:
-        result = client.documents.list(prefix="/tenant/notes/")
+        result = client.documents.list(prefix="/workspace/notes/")
     assert len(result.documents) == 2
 
 
@@ -314,7 +328,7 @@ def test_auth_provision() -> None:
             200,
             json={
                 "apiKey": "usk_live_abc",
-                "tenantId": "t1",
+                "workspaceId": "t1",
                 "status": "unverified",
                 "emailSent": True,
                 "message": "Check your inbox.",
@@ -332,7 +346,7 @@ def test_auth_verify() -> None:
     respx.post("https://brain.unisonlabs.ai/v1/auth/verify").mock(
         return_value=httpx.Response(
             200,
-            json={"verified": True, "tenantId": "t1", "apiKey": "usk_live_new"},
+            json={"verified": True, "workspaceId": "t1", "apiKey": "usk_live_new"},
         )
     )
     with UnisonBrain(token="usk_live_test") as client:
@@ -351,7 +365,7 @@ def test_4xx_raises_api_status_error() -> None:
     )
     with UnisonBrain(token="usk_live_test", max_retries=0) as client:
         with pytest.raises(unisonlabs.NotFoundError):
-            client.get("/tenant/missing.md")
+            client.get("/workspace/missing.md")
 
 
 @respx.mock
@@ -361,7 +375,7 @@ def test_auth_header_sent() -> None:
             200,
             json={
                 "user": {"id": "u1", "email": "a@b.com"},
-                "tenant": {"id": "t1", "name": "Acme", "verified": True},
+                "workspace": {"id": "t1", "name": "Acme", "verified": True},
                 "scopes": ["brain:read"],
             },
         )
@@ -384,12 +398,12 @@ async def test_async_search() -> None:
     respx.get("https://brain.unisonlabs.ai/v1/brain/search").mock(
         return_value=httpx.Response(
             200,
-            json={"results": [{"doc": {"path": "/tenant/notes/x.md"}, "score": 0.8}]},
+            json={"results": [{"doc": {"path": "/workspace/notes/x.md"}, "score": 0.8}]},
         )
     )
     async with AsyncUnisonBrain(token="usk_live_test") as client:
         result = await client.search("query")
-    assert result.results[0].doc.path == "/tenant/notes/x.md"
+    assert result.results[0].doc.path == "/workspace/notes/x.md"
 
 
 @respx.mock

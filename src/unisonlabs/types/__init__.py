@@ -10,7 +10,7 @@ class WhoAmIUser(BaseModel):
     email: str
 
 
-class WhoAmITenant(BaseModel):
+class WhoAmIWorkspace(BaseModel):
     id: str
     name: str
     verified: bool
@@ -18,13 +18,13 @@ class WhoAmITenant(BaseModel):
 
 class WhoAmIResponse(BaseModel):
     user: WhoAmIUser
-    tenant: WhoAmITenant
+    workspace: WhoAmIWorkspace
     scopes: List[str]
 
 
 class ProvisionResponse(BaseModel):
     apiKey: str
-    tenantId: str
+    workspaceId: str
     status: str
     emailSent: bool
     message: str
@@ -32,7 +32,7 @@ class ProvisionResponse(BaseModel):
 
 class VerifyResponse(BaseModel):
     verified: bool
-    tenantId: str
+    workspaceId: str
     apiKey: Optional[str] = None
 
 
@@ -283,7 +283,7 @@ class TokenResponse(BaseModel):
 __all__ = [
     "WhoAmIResponse",
     "WhoAmIUser",
-    "WhoAmITenant",
+    "WhoAmIWorkspace",
     "ProvisionResponse",
     "VerifyResponse",
     "RequestKeyResponse",

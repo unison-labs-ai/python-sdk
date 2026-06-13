@@ -13,7 +13,7 @@ client = UnisonBrain(
 
 # Confirm auth
 me = client.whoami()
-print(f"Authenticated as {me.user.email} (tenant: {me.tenant.name})")
+print(f"Authenticated as {me.user.email} (workspace: {me.workspace.name})")
 
 # Search the brain
 results = client.search("architecture decisions", limit=5)
@@ -21,10 +21,10 @@ for hit in results.results:
     print(f"  [{hit.score:.2f}] {hit.doc.path} — {hit.doc.title}")
 
 # Read a document
-doc = client.get("/tenant/projects/architecture.md")
+doc = client.get("/workspace/projects/architecture.md")
 print(doc.body)
 
-# Write a document (path must be under /private/, /tenant/, or /teams/<slug>/)
+# Write a document (path must be under /private/ or /workspace/)
 doc = client.write(
     "/private/notes/my-note.md",
     "# My Note\n\nThis is a test note.",

@@ -17,7 +17,7 @@ investigate. We will credit reporters who want it once a fix ships.
 
 This repository is the **Python SDK** for the Unison brain API. It holds no
 secrets and is not a security boundary — all authentication, authorization,
-tenant isolation, and rate limiting are enforced **server-side** by the Unison
+workspace isolation, and rate limiting are enforced **server-side** by the Unison
 brain API. Reports about the client are most useful when they concern:
 
 - credential handling in environment variables or on disk,
