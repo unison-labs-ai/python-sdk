@@ -13,7 +13,7 @@ from ._exceptions import BrainContractError
 _WRITABLE_ROOTS = ("/private/", "/workspace/")
 _LEGACY_ROOTS = ("/wiki/", "/skills/")
 _READ_ONLY_ROOTS = ("/system/", "/sources/")
-_REMOVED_ROOTS = ("/actions/", "/raw/", "/tenant/", "/teams/")
+_REMOVED_ROOTS = ("/actions/", "/raw/", "/teams/")
 
 _SLUG_RE = re.compile(r"[^a-z0-9-]")
 
