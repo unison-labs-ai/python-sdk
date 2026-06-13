@@ -120,7 +120,7 @@ def test_default_headers_sent_on_every_request() -> None:
             200,
             json={
                 "user": {"id": "u1", "email": "a@b.com"},
-                "tenant": {"id": "t1", "name": "Acme", "verified": True},
+                "workspace": {"id": "t1", "name": "Acme", "verified": True},
                 "scopes": [],
             },
         )
@@ -155,7 +155,7 @@ def test_with_options_default_headers_merged() -> None:
             200,
             json={
                 "user": {"id": "u1", "email": "a@b.com"},
-                "tenant": {"id": "t1", "name": "Acme", "verified": True},
+                "workspace": {"id": "t1", "name": "Acme", "verified": True},
                 "scopes": [],
             },
         )
@@ -177,7 +177,7 @@ def test_with_options_set_default_headers_replaces() -> None:
             200,
             json={
                 "user": {"id": "u1", "email": "a@b.com"},
-                "tenant": {"id": "t1", "name": "Acme", "verified": True},
+                "workspace": {"id": "t1", "name": "Acme", "verified": True},
                 "scopes": [],
             },
         )
@@ -215,7 +215,7 @@ def test_custom_headers_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
             200,
             json={
                 "user": {"id": "u1", "email": "a@b.com"},
-                "tenant": {"id": "t1", "name": "Acme", "verified": True},
+                "workspace": {"id": "t1", "name": "Acme", "verified": True},
                 "scopes": [],
             },
         )
@@ -256,13 +256,13 @@ def test_with_raw_response_documents_search() -> None:
     respx.get("https://brain.unisonlabs.ai/v1/brain/search").mock(
         return_value=httpx.Response(
             200,
-            json={"results": [{"doc": {"path": "/tenant/foo.md"}, "score": 0.9}]},
+            json={"results": [{"doc": {"path": "/workspace/foo.md"}, "score": 0.9}]},
         )
     )
     with UnisonBrain(token="usk_live_test") as client:
         raw = client.with_raw_response.documents.search("foo")
     assert isinstance(raw, RawResponse)
-    assert raw.parse().results[0].doc.path == "/tenant/foo.md"
+    assert raw.parse().results[0].doc.path == "/workspace/foo.md"
 
 
 # ---------------------------------------------------------------------------

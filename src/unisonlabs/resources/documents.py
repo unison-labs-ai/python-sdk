@@ -151,7 +151,7 @@ class DocumentsResource:
         return _parse_doc(data)
 
     def share(self, *, kind: str, id: str) -> ShareResponse:
-        """Promote a private item to tenant-visible."""
+        """Promote a private item to workspace-visible."""
         data = self._t.request("POST", "/v1/brain/share", json={"kind": kind, "id": id})
         return ShareResponse(**data)
 
