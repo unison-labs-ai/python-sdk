@@ -1,14 +1,24 @@
-# Unison brain Python SDK
+<div align="center">
 
-[![PyPI version](https://img.shields.io/pypi/v/unisonlabs.svg?label=pypi%20(stable))](https://pypi.org/project/unisonlabs/)
+<img src="https://raw.githubusercontent.com/unison-labs-ai/unison-brain/main/assets/brain.svg" width="140" />
+
+# python-sdk
+
+**The Unison brain, in four lines of Python.**
+
+The memory layer for agents — powered by the [Unison brain](https://unisonlabs.ai).
+
+[![CI](https://github.com/unison-labs-ai/python-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/unison-labs-ai/python-sdk/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/unisonlabs.svg?label=pypi)](https://pypi.org/project/unisonlabs/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/unison-labs-ai/python-sdk?style=social)](https://github.com/unison-labs-ai/python-sdk)
 
-The official Python SDK for the [Unison brain API](https://docs.unisonlabs.ai) — memory infrastructure for AI agents and teams.
+[Installation](#installation) · [Quickstart](#quickstart) · [API Reference](#api-reference) · [Contributing](#contributing)
 
-Both synchronous and asynchronous clients are included, powered by [httpx](https://www.python-httpx.org/).
+</div>
 
-**AI agents:** read [AGENTS.md](AGENTS.md) — it covers install, auth with a `usk_` key, and the search-first / write-back loop in four steps.
+---
 
 ## Quickstart
 
@@ -20,13 +30,14 @@ export UNISON_TOKEN=usk_live_...
 ```python
 from unisonlabs import UnisonBrain
 
-client = UnisonBrain()                                         # reads UNISON_TOKEN env var
-results = client.search("architecture decisions", limit=5)     # hybrid search
+client = UnisonBrain()                                          # reads UNISON_TOKEN env var
+results = client.search("architecture decisions", limit=5)      # hybrid search
 doc = client.write("/private/notes/my-note.md", "# Note\n...")  # write
-doc2 = client.get("/private/notes/my-note.md")                # read back
-print(doc2.body)                                               # full markdown body
-client.close()
+doc2 = client.get("/private/notes/my-note.md")                  # read back
+print(doc2.body)
 ```
+
+**AI agents:** read [AGENTS.md](AGENTS.md) — install, auth with a `usk_` key, and the search-first / write-back loop in four steps.
 
 ## MCP Server
 
@@ -53,14 +64,14 @@ Use the Unison brain MCP server to give AI assistants direct access to your brai
 pip install unisonlabs
 ```
 
+Python 3.9 or higher required.
+
 ## Environment variables
 
 | Variable | Default | Description |
 |---|---|---|
 | `UNISON_TOKEN` | required | Your `usk_live_...` API token |
 | `UNISON_API_URL` | `https://brain.unisonlabs.ai` | Base URL for the brain API |
-
-Set these in your environment or a `.env` file. The client reads them automatically.
 
 ## Usage
 
@@ -173,7 +184,7 @@ new_key_resp = client.auth.verify("agent@example.com", input("Recovery OTP: "))
 print(new_key_resp.apiKey)
 ```
 
-## Resources
+## API Reference
 
 ### `client.documents`
 
@@ -298,12 +309,42 @@ The client retries 2 times by default with exponential backoff on connection err
 client = UnisonBrain(max_retries=0)  # disable retries
 ```
 
-## Requirements
+## Star history
 
-Python 3.9 or higher.
+<div align="center">
+
+<a href="https://star-history.com/#unison-labs-ai/python-sdk&Date">
+<img src="https://api.star-history.com/svg?repos=unison-labs-ai/python-sdk&type=Date" width="600" />
+</a>
+
+⭐ If Unison is useful to you, a star helps other developers find it.
+
+</div>
 
 ## Contributing
 
 Open issues and pull requests at [github.com/unison-labs-ai/python-sdk](https://github.com/unison-labs-ai/python-sdk).
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, conventions, and PR guidelines.
 Security issues: email security@unisonlabs.ai — do not open a public issue.
+
+---
+
+## Part of the Unison Labs constellation
+
+**One brain, every agent.** Every repo below reads from _and writes to_ the same [Unison brain](https://unisonlabs.ai) — no per-tool memory silos.
+
+| Repo | What it does |
+|---|---|
+| [unison-brain](https://github.com/unison-labs-ai/unison-brain) | CLI · SDK · MCP server — the core |
+| [claude-unison](https://github.com/unison-labs-ai/claude-unison) | Memory for Claude Code |
+| [cursor-unison](https://github.com/unison-labs-ai/cursor-unison) | Memory for Cursor |
+| [codex-unison](https://github.com/unison-labs-ai/codex-unison) | Memory for OpenAI Codex CLI |
+| [opencode-unison](https://github.com/unison-labs-ai/opencode-unison) | Memory for OpenCode |
+| [openclaw-unison](https://github.com/unison-labs-ai/openclaw-unison) | Memory for OpenClaw |
+| [pipecat-unison](https://github.com/unison-labs-ai/pipecat-unison) | Memory for Pipecat voice agents |
+| **[python-sdk](https://github.com/unison-labs-ai/python-sdk) ← you are here** | **Python SDK for the brain** |
+| [install-mcp](https://github.com/unison-labs-ai/install-mcp) | One-command MCP installer |
+| [code-chunk](https://github.com/unison-labs-ai/code-chunk) | AST-aware code chunking |
+| [unison-fs](https://github.com/unison-labs-ai/unison-fs) | Mount the brain as a filesystem |
+| [backchannel](https://github.com/unison-labs-ai/backchannel) | Async messaging between agents |
+| [Unison-evals](https://github.com/unison-labs-ai/Unison-evals) | Open memory benchmark suite |
