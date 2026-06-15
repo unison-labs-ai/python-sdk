@@ -321,6 +321,23 @@ client = UnisonBrain(max_retries=0)  # disable retries
 
 </div>
 
+## Releasing
+
+Set a PyPI token — either configure `~/.pypirc` or export:
+
+```sh
+export TWINE_USERNAME=__token__
+export TWINE_PASSWORD=pypi-...
+```
+
+Then:
+
+```sh
+python scripts/release.py
+```
+
+Builds, publishes `unisonlabs` to PyPI (idempotent — skips if the version is already live), then tags and pushes `v<version>`.
+
 ## Contributing
 
 Open issues and pull requests at [github.com/unison-labs-ai/python-sdk](https://github.com/unison-labs-ai/python-sdk).
