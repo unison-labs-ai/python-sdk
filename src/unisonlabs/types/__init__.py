@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class WhoAmIUser(BaseModel):
@@ -86,6 +86,39 @@ class SearchResult(BaseModel):
 
 class SearchResponse(BaseModel):
     results: List[SearchResult]
+
+
+class ContextHit(BaseModel):
+    """A single ranked hit from GET /v1/brain/context (flat shape — path/title/snippet at top level)."""
+
+    model_config = {"extra": "allow"}
+
+    path: Optional[str] = None
+    title: Optional[str] = None
+    kind: Optional[str] = None
+    score: Optional[float] = None
+    snippet: Optional[str] = None
+
+
+class ContextResponse(BaseModel):
+    """Response from GET /v1/brain/context.
+
+    ``context_md`` is a prompt-ready markdown block of the most relevant memory for
+    the query — inject it verbatim. ``weak_evidence`` is True when the brain has
+    nothing confident to offer; treat it as "the brain doesn't know" rather than
+    padding the prompt with thin matches.
+    """
+
+    model_config = {"extra": "allow", "populate_by_name": True}
+
+    query: Optional[str] = None
+    mode: Optional[str] = None
+    generated_at: Optional[str] = Field(default=None, alias="generatedAt")
+    top_score: Optional[float] = Field(default=None, alias="topScore")
+    weak_evidence: bool = Field(default=False, alias="weakEvidence")
+    hits: List[ContextHit] = []
+    entities: List[Any] = []
+    context_md: str = Field(default="", alias="contextMd")
 
 
 class GrepResponse(BaseModel):

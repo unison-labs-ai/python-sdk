@@ -170,6 +170,35 @@ def test_search() -> None:
 
 
 @respx.mock
+def test_context() -> None:
+    respx.get("https://brain.unisonlabs.ai/v1/brain/context").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "query": "auth decision",
+                "mode": "auto",
+                "generatedAt": "2026-06-15T00:00:00Z",
+                "topScore": 1.4,
+                "weakEvidence": False,
+                "hits": [
+                    {"path": "/workspace/decisions/auth.md", "title": "Auth", "score": 1.4,
+                     "snippet": "We chose email-OTP."}
+                ],
+                "entities": [],
+                "contextMd": "## Auth\nWe chose email-OTP.",
+            },
+        )
+    )
+    with UnisonBrain(token="usk_live_test") as client:
+        ctx = client.context("auth decision", k=5)
+    assert ctx.weak_evidence is False
+    assert ctx.context_md == "## Auth\nWe chose email-OTP."
+    assert ctx.top_score == 1.4
+    assert ctx.hits[0].path == "/workspace/decisions/auth.md"
+    assert ctx.hits[0].snippet == "We chose email-OTP."
+
+
+@respx.mock
 def test_write_document() -> None:
     respx.put("https://brain.unisonlabs.ai/v1/brain/doc").mock(
         return_value=httpx.Response(
