@@ -333,7 +333,7 @@ export TWINE_PASSWORD=pypi-...
 Then:
 
 ```sh
-python scripts/release.py
+python3 scripts/release.py
 ```
 
 Builds, publishes `unisonlabs` to PyPI (idempotent — skips if the version is already live), then tags and pushes `v<version>`.
