@@ -8,6 +8,7 @@ from .._fs_contract import resolve_write_path
 from .._http import AsyncHttpTransport, HttpTransport
 from ..types import (
     BrainDocument,
+    ContextResponse,
     DeleteDocResponse,
     FsListResponse,
     FsReadResponse,
@@ -56,6 +57,32 @@ class DocumentsResource:
             params["asOf"] = as_of
         data = self._t.request("GET", "/v1/brain/search", params=params)
         return SearchResponse(**data)
+
+    def context(
+        self,
+        q: str,
+        *,
+        k: Optional[int] = None,
+        mode: Optional[str] = None,
+        max_entities: Optional[int] = None,
+        path_prefix: Optional[str] = None,
+        include_bodies: Optional[bool] = None,
+    ) -> ContextResponse:
+        """Fused, prompt-ready recall — returns ``context_md`` plus the ranked hits and
+        entity facts behind it, with a ``weak_evidence`` flag when the brain knows too little."""
+        params: Dict[str, Any] = {"q": q}
+        if k is not None:
+            params["k"] = k
+        if mode is not None:
+            params["mode"] = mode
+        if max_entities is not None:
+            params["maxEntities"] = max_entities
+        if path_prefix is not None:
+            params["pathPrefix"] = path_prefix
+        if include_bodies is not None:
+            params["includeBodies"] = str(include_bodies).lower()
+        data = self._t.request("GET", "/v1/brain/context", params=params)
+        return ContextResponse(**data)
 
     def grep(
         self,
@@ -236,6 +263,32 @@ class AsyncDocumentsResource:
             params["asOf"] = as_of
         data = await self._t.request("GET", "/v1/brain/search", params=params)
         return SearchResponse(**data)
+
+    async def context(
+        self,
+        q: str,
+        *,
+        k: Optional[int] = None,
+        mode: Optional[str] = None,
+        max_entities: Optional[int] = None,
+        path_prefix: Optional[str] = None,
+        include_bodies: Optional[bool] = None,
+    ) -> ContextResponse:
+        """Fused, prompt-ready recall — returns ``context_md`` plus the ranked hits and
+        entity facts behind it, with a ``weak_evidence`` flag when the brain knows too little."""
+        params: Dict[str, Any] = {"q": q}
+        if k is not None:
+            params["k"] = k
+        if mode is not None:
+            params["mode"] = mode
+        if max_entities is not None:
+            params["maxEntities"] = max_entities
+        if path_prefix is not None:
+            params["pathPrefix"] = path_prefix
+        if include_bodies is not None:
+            params["includeBodies"] = str(include_bodies).lower()
+        data = await self._t.request("GET", "/v1/brain/context", params=params)
+        return ContextResponse(**data)
 
     async def grep(
         self,

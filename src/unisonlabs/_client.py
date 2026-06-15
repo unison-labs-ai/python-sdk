@@ -23,7 +23,7 @@ from .resources.facts import AsyncFactsResource, FactsResource
 from .resources.jobs import AsyncJobsResource, JobsResource
 from .resources.links import AsyncLinksResource, LinksResource
 from .resources.review import AsyncReviewResource, ReviewResource
-from .types import BrainDocument, BrainStatus, SearchResponse, WhoAmIResponse
+from .types import BrainDocument, BrainStatus, ContextResponse, SearchResponse, WhoAmIResponse
 
 __all__ = ["UnisonBrain", "AsyncUnisonBrain", "Client", "AsyncClient"]
 
@@ -134,6 +134,10 @@ class UnisonBrain:
     def search(self, q: str, *, limit: Optional[int] = None, **kwargs) -> SearchResponse:  # type: ignore[return]
         """Hybrid semantic+keyword search."""
         return self.documents.search(q, k=limit, **kwargs)
+
+    def context(self, q: str, **kwargs) -> ContextResponse:  # type: ignore[return]
+        """Prompt-ready recall: fused contextMd + hits, with a weakEvidence abstention flag."""
+        return self.documents.context(q, **kwargs)
 
     def get(self, path: str) -> BrainDocument:
         """Read a document by path."""
@@ -284,6 +288,10 @@ class AsyncUnisonBrain:
 
     async def search(self, q: str, *, limit: Optional[int] = None, **kwargs) -> SearchResponse:  # type: ignore[return]
         return await self.documents.search(q, k=limit, **kwargs)
+
+    async def context(self, q: str, **kwargs) -> ContextResponse:  # type: ignore[return]
+        """Prompt-ready recall: fused contextMd + hits, with a weakEvidence abstention flag."""
+        return await self.documents.context(q, **kwargs)
 
     async def get(self, path: str) -> BrainDocument:
         return await self.documents.get(path)
