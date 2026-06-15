@@ -27,6 +27,7 @@ from ._response import AsyncStreamingResponse, RawResponse, StreamingResponse
 from .types import (
     BrainDocument,
     BrainStatus,
+    ContextResponse,
     DeleteDocResponse,
     FsListResponse,
     FsReadResponse,
@@ -56,6 +57,14 @@ class RawDocumentsResource:
         params.update(kw)
         raw = self._raw("GET", "/v1/brain/search", params=params)
         return RawResponse(raw=raw, parsed=SearchResponse(**raw.json()))
+
+    def context(self, q: str, *, k: Optional[int] = None, **kw: Any) -> RawResponse[ContextResponse]:
+        params: Dict[str, Any] = {"q": q}
+        if k is not None:
+            params["k"] = k
+        params.update(kw)
+        raw = self._raw("GET", "/v1/brain/context", params=params)
+        return RawResponse(raw=raw, parsed=ContextResponse(**raw.json()))
 
     def get(self, path: str) -> RawResponse[BrainDocument]:
         from .resources.documents import _parse_doc
@@ -160,6 +169,14 @@ class AsyncRawDocumentsResource:
         params.update(kw)
         raw = await self._raw("GET", "/v1/brain/search", params=params)
         return RawResponse(raw=raw, parsed=SearchResponse(**raw.json()))
+
+    async def context(self, q: str, *, k: Optional[int] = None, **kw: Any) -> RawResponse[ContextResponse]:
+        params: Dict[str, Any] = {"q": q}
+        if k is not None:
+            params["k"] = k
+        params.update(kw)
+        raw = await self._raw("GET", "/v1/brain/context", params=params)
+        return RawResponse(raw=raw, parsed=ContextResponse(**raw.json()))
 
     async def get(self, path: str) -> RawResponse[BrainDocument]:
         from .resources.documents import _parse_doc
