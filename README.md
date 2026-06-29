@@ -267,7 +267,7 @@ All document paths must end in `.md`. Writable roots:
 | Root | Visibility |
 |---|---|
 | `/private/...` | Private to the calling user |
-| `/workspace/...` | Entire workspace (use `workspace/teams/<slug>/` for team folders) |
+| `/workspace/...` | Entire workspace |
 
 Unqualified paths (no leading `/`) are automatically rewritten to `/private/notes/<slug>.md`. Invalid roots (`/actions/`, `/raw/`, `/teams/`, unknown namespaces) raise `BrainContractError` before any network call.
 

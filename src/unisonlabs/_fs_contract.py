@@ -2,6 +2,11 @@
 
 Mirrors the server's path routing rules so that obviously-invalid paths are
 rejected immediately without a round-trip.
+
+Canonical writable roots: /private/, /workspace/.
+Read-only root: /system/.
+Legacy roots (/wiki/, /skills/) are rejected — raise BrainContractError.
+Root-level /sources/ is rejected; only /private/sources/ is valid.
 """
 
 from __future__ import annotations
@@ -12,7 +17,7 @@ from ._exceptions import BrainContractError
 
 _WRITABLE_ROOTS = ("/private/", "/workspace/")
 _LEGACY_ROOTS = ("/wiki/", "/skills/")
-_READ_ONLY_ROOTS = ("/system/", "/sources/")
+_READ_ONLY_ROOTS = ("/system/",)
 _REMOVED_ROOTS = ("/actions/", "/raw/", "/teams/")
 
 _SLUG_RE = re.compile(r"[^a-z0-9-]")
@@ -30,7 +35,7 @@ def resolve_write_path(path: str) -> str:
 
     Rules (mirrors server):
     1. Path under a writable root → pass through unchanged.
-    2. Legacy roots (/wiki/, /skills/) → pass through (server accepts as shims).
+    2. Legacy roots (/wiki/, /skills/) → BrainContractError (server rejects them).
     3. Unqualified path (no leading slash, or bare filename) → /private/notes/<slug>.md
     4. Bare root *.md (single segment like /foo.md) → /private/notes/<slug>.md
     5. Read-only roots → BrainContractError
@@ -71,10 +76,14 @@ def resolve_write_path(path: str) -> str:
         if path.startswith(root):
             return _ensure_md(path)
 
-    # Legacy roots → pass through (server handles)
+    # Legacy roots → reject (server root-guard rejects them)
     for root in _LEGACY_ROOTS:
         if path.startswith(root):
-            return _ensure_md(path)
+            raise BrainContractError(
+                f"Path '{path}' uses a legacy root ({root.rstrip('/')}). "
+                "Writable roots are /private/, /workspace/.",
+                path=path,
+            )
 
     # Bare root path like /foo.md (single segment)
     parts = path.lstrip("/").split("/")

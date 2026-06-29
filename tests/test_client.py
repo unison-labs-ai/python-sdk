@@ -117,6 +117,27 @@ def test_fs_contract_read_only_root_raises() -> None:
         resolve_write_path("/system/views/foo.md")
 
 
+def test_fs_contract_legacy_wiki_root_raises() -> None:
+    from unisonlabs._fs_contract import resolve_write_path
+
+    with pytest.raises(BrainContractError):
+        resolve_write_path("/wiki/some-page.md")
+
+
+def test_fs_contract_legacy_skills_root_raises() -> None:
+    from unisonlabs._fs_contract import resolve_write_path
+
+    with pytest.raises(BrainContractError):
+        resolve_write_path("/skills/my-skill.md")
+
+
+def test_fs_contract_root_level_sources_raises() -> None:
+    from unisonlabs._fs_contract import resolve_write_path
+
+    with pytest.raises(BrainContractError):
+        resolve_write_path("/sources/gmail/foo.md")
+
+
 def test_fs_contract_unknown_root_raises() -> None:
     from unisonlabs._fs_contract import resolve_write_path
 
